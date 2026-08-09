@@ -24,6 +24,6 @@ class AuditItem:
     
     last_modified: datetime | None = None
     owner: str | None = None
-    metadata: dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict, hash=False)
     is_reclaimable: bool = True
     id: uuid.UUID = field(default_factory=uuid.uuid4)

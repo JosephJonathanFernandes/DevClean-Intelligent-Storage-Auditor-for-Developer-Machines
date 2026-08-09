@@ -7,3 +7,4 @@ class ConfidenceLevel(Enum):
     VERIFIED = "verified"     # High certainty (e.g., known path, clear signature)
     PROBABLE = "probable"     # Likely correct, but could be false positive
     HEURISTIC = "heuristic"   # Educated guess based on patterns
+    UNKNOWN = "unknown"       # No confidence level determined

@@ -1,0 +1,131 @@
+# serializer version: 1
+# name: test_full_scan_use_case_snapshot
+  '''
+  {
+    "items": [
+      {
+        "category": "chrome_ai_model",
+        "confidence": "verified",
+        "description": "Chrome AI Model Storage (OptGuideOnDeviceModel)",
+        "id": "7297fe71-4215-43b9-ad92-f3ce38f36037",
+        "is_reclaimable": true,
+        "last_modified": null,
+        "metadata": {},
+        "owner": null,
+        "path": "<TMP_PATH>/AppData/Local/Google/Chrome/User Data/OptGuideOnDeviceModel",
+        "recommendation": {
+          "command": null,
+          "explanation": "Chrome automatically downloads on-device AI models for features like Help Me Write.",
+          "files_affected": [
+            "<TMP_PATH>/AppData/Local/Google/Chrome/User Data/OptGuideOnDeviceModel"
+          ],
+          "rollback": "automatic",
+          "rollback_notes": "Chrome automatically manages these.",
+          "safety_reason": "Safe to delete. Chrome will re-download the models in the background if the features are used again.",
+          "title": "Delete Chrome AI Models"
+        },
+        "risk_level": "low",
+        "size_bytes": 200
+      },
+      {
+        "category": "unknown",
+        "confidence": "probable",
+        "description": "Python 3.11 Installation",
+        "id": "01b7f30f-c7d5-4c37-9886-989650b35293",
+        "is_reclaimable": true,
+        "last_modified": null,
+        "metadata": {
+          "is_duplicate": true,
+          "primary_path": "C:\\Users\\Joseph\\AppData\\Local\\Temp\\pytest-of-Joseph\\pytest-5\\test_full_scan_use_case_snapsh0\\Program Files\\Python\\Python311",
+          "version": "3.11"
+        },
+        "owner": null,
+        "path": "<TMP_PATH>/AppData/Local/Programs/Python/Python311",
+        "recommendation": {
+          "command": null,
+          "explanation": "Potential duplicate of Python 3.11 located at C:\\Users\\Joseph\\AppData\\Local\\Temp\\pytest-of-Joseph\\pytest-5\\test_full_scan_use_case_snapsh0\\Program Files\\Python\\Python311.",
+          "files_affected": [
+            "<TMP_PATH>/AppData/Local/Programs/Python/Python311"
+          ],
+          "rollback": "manual",
+          "rollback_notes": "Must re-run the Python installer.",
+          "safety_reason": "Removing a Python installation will break any scripts or virtual environments that depend on it.",
+          "title": "Remove duplicate Python installation"
+        },
+        "risk_level": "high",
+        "size_bytes": 0
+      },
+      {
+        "category": "python_cache",
+        "confidence": "verified",
+        "description": "Pip package download cache",
+        "id": "8d0f262b-5a8f-419e-829c-4f5ec18a6380",
+        "is_reclaimable": true,
+        "last_modified": null,
+        "metadata": {},
+        "owner": null,
+        "path": "<TMP_PATH>/AppData/Local/pip/cache",
+        "recommendation": {
+          "command": "py -m pip cache purge",
+          "explanation": "This cache stores downloaded package archives. Deleting it will not uninstall installed Python packages.",
+          "files_affected": [
+            "<TMP_PATH>/AppData/Local/pip/cache"
+          ],
+          "rollback": "automatic",
+          "rollback_notes": "Cache will regenerate automatically when downloading new packages.",
+          "safety_reason": "Contains downloaded package archives only. Installed packages are not affected.",
+          "title": "Purge pip download cache"
+        },
+        "risk_level": "safe",
+        "size_bytes": 500
+      },
+      {
+        "category": "unknown",
+        "confidence": "verified",
+        "description": "Python 3.11 Installation",
+        "id": "f3c7ec8f-a35b-4a54-ba36-fdc429b8964b",
+        "is_reclaimable": false,
+        "last_modified": null,
+        "metadata": {
+          "is_duplicate": false,
+          "primary_path": null,
+          "version": "3.11"
+        },
+        "owner": null,
+        "path": "<TMP_PATH>/Program Files/Python/Python311",
+        "recommendation": {
+          "command": null,
+          "explanation": "Python 3.11 installation.",
+          "files_affected": [
+            "<TMP_PATH>/Program Files/Python/Python311"
+          ],
+          "rollback": "manual",
+          "rollback_notes": "Must re-run the Python installer.",
+          "safety_reason": "Removing a Python installation will break any scripts or virtual environments that depend on it.",
+          "title": "Uninstall Python"
+        },
+        "risk_level": "high",
+        "size_bytes": 0
+      }
+    ],
+    "statistics": {
+      "analyzers_failed": 0,
+      "analyzers_run": 2,
+      "directories_scanned": 0,
+      "permission_errors": 0,
+      "skipped_paths": 0,
+      "total_analyzers": 2
+    },
+    "summary": {
+      "high_items": 2,
+      "low_items": 1,
+      "moderate_items": 0,
+      "reclaimable_size_bytes": 700,
+      "safe_items": 1,
+      "scan_duration_seconds": 0.006540799979120493,
+      "total_items": 4,
+      "total_size_bytes": 700
+    }
+  }
+  '''
+# ---

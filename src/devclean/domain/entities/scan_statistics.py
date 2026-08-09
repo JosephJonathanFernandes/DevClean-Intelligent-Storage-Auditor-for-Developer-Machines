@@ -5,6 +5,7 @@ from typing import Sequence
 class ScanStatistics:
     """Operational metrics for the entire scan process."""
     
+    total_analyzers: int = 0
     analyzers_run: int = 0
     analyzers_failed: int = 0
     directories_scanned: int = 0

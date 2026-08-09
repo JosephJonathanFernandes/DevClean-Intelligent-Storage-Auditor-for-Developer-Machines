@@ -6,13 +6,13 @@ from .audit_item import AuditItem
 class ScanSummary:
     """A summary of the scan results."""
     
-    total_items: int
-    safe_items: int
-    low_items: int
-    moderate_items: int
-    high_items: int
+    total_items: int = 0
+    safe_items: int = 0
+    low_items: int = 0
+    moderate_items: int = 0
+    high_items: int = 0
     
-    total_size_bytes: int
-    reclaimable_size_bytes: int
+    total_size_bytes: int = 0
+    reclaimable_size_bytes: int = 0
     
-    scan_duration_seconds: float
+    scan_duration_seconds: float = 0.0

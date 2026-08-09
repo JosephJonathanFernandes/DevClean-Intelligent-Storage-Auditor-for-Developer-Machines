@@ -54,6 +54,8 @@ def test_pipeline_fault_isolation_and_aggregation():
 
     event_bus = EventBus()
     
+    from tests.unit.infrastructure.test_python_detectors import MockPathResolver
+    
     # We want to track events for verification
     emitted_events = []
     event_bus.subscribe_all(lambda e: emitted_events.append(e))
@@ -61,40 +63,47 @@ def test_pipeline_fault_isolation_and_aggregation():
     pipeline = AnalyzerPipeline(registry, event_bus)
     use_case = ScanUseCase(pipeline)
 
+    # Use a dummy tmp path for resolver
+    tmp = Path("/tmp")
+    
     context = ScanContext(
         root_paths=(Path("/"),),
         settings=ScanSettings(),
         platform=Platform.LINUX,
+        paths=MockPathResolver(tmp),
         cancelled=lambda: False
     )
 
     # Act
-    report, stats, results = use_case.execute(context)
-
-    # Assert - Items
-    assert len(report.items) == 15
-    assert report.summary.total_items == 15
-    assert report.summary.total_size_bytes == 1500  # 15 * 100
+    result = use_case.execute(context)
+    
+    # Assert isolation
+    assert result.statistics.total_analyzers == 3
+    assert result.statistics.analyzers_run == 3
+    assert result.statistics.analyzers_failed == 1
+    
+    assert result.report.summary.total_items == 15
+    assert result.report.summary.total_size_bytes == 1500  # 15 * 100
 
     # Assert - Results
-    assert len(results) == 3
+    assert len(result.analyzer_results) == 3
     
-    res_a = next(r for r in results if r.analyzer_name == "AnalyzerA")
+    res_a = next(r for r in result.analyzer_results if r.analyzer_name == "AnalyzerA")
     assert res_a.is_success
     assert res_a.item_count == 10
     
-    res_b = next(r for r in results if r.analyzer_name == "AnalyzerB")
+    res_b = next(r for r in result.analyzer_results if r.analyzer_name == "AnalyzerB")
     assert not res_b.is_success
     assert "Access denied" in res_b.errors[0]
     
-    res_c = next(r for r in results if r.analyzer_name == "AnalyzerC")
+    res_c = next(r for r in result.analyzer_results if r.analyzer_name == "AnalyzerC")
     assert res_c.is_success
     assert res_c.item_count == 5
 
     # Assert - Stats
-    assert stats.analyzers_run == 3
-    assert stats.analyzers_failed == 1
-    assert stats.permission_errors == 1
+    assert result.statistics.analyzers_run == 3
+    assert result.statistics.analyzers_failed == 1
+    assert result.statistics.permission_errors == 1
 
     # Assert - Events
     failures = [e for e in emitted_events if isinstance(e, AnalyzerFailed)]

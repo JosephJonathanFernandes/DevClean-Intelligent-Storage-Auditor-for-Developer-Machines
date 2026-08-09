@@ -112,6 +112,7 @@ class AnalyzerPipeline:
 
         pipeline_duration = time.perf_counter() - pipeline_start
         self.statistics = ScanStatistics(
+            total_analyzers=len(self._registry.get_all()),
             analyzers_run=analyzers_run,
             analyzers_failed=analyzers_failed,
             scan_duration_seconds=pipeline_duration,

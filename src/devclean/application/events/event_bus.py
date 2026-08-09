@@ -21,8 +21,7 @@ class EventBus:
 
     def subscribe(self, event_type: type[E], handler: Callable[[E], None]) -> None:
         """Subscribe to a specific event type."""
-        # Using type ignore because mypy struggles with the covariance here
-        self._subscribers[event_type].append(handler) # type: ignore
+        self._subscribers[event_type].append(handler)
 
     def subscribe_all(self, handler: Callable[[Event], None]) -> None:
         """Subscribe to all events (e.g., for global logging or telemetry)."""
