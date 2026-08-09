@@ -23,12 +23,12 @@ class InstallationDetector(Detector):
         installations: dict[str, list[Path]] = {}
         
         candidates = [
-            context.paths.local_app_data / "Programs" / "Python",
-            context.paths.windows_apps,
-            context.paths.program_files / "Python",
-            context.paths.program_files_x86 / "Python" if context.paths.program_files_x86 else None,
-            context.paths.user_profile / ".pyenv" / "pyenv-win" / "versions",
-            context.paths.user_profile / ".rye" / "py",
+            context.services.paths.local_app_data / "Programs" / "Python",
+            context.services.paths.windows_apps,
+            context.services.paths.program_files / "Python",
+            context.services.paths.program_files_x86 / "Python" if context.services.paths.program_files_x86 else None,
+            context.services.paths.user_profile / ".pyenv" / "pyenv-win" / "versions",
+            context.services.paths.user_profile / ".rye" / "py",
         ]
         
         for base_path in candidates:

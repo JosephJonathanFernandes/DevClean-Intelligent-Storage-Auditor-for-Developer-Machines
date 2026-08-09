@@ -12,37 +12,53 @@ from devclean.application.use_cases.scan import ScanUseCase
 from devclean.infrastructure.python.analyzer import PythonAnalyzer
 from devclean.infrastructure.chrome.analyzer import ChromeAnalyzer
 
-from tests.unit.infrastructure.test_python_detectors import MockPathResolver
+from tests.unit.infrastructure.test_python_detectors import MockPlatformServices
 
 def test_full_scan_use_case_snapshot(tmp_path: Path, snapshot):
-    resolver = MockPathResolver(tmp_path)
+    resolver = MockPlatformServices(tmp_path)
     
     # 1. Setup predictable fake environment
     
     # Python Pip Cache
-    pip_cache = resolver.local_app_data / "pip" / "cache"
+    pip_cache = resolver.paths.local_app_data / "pip" / "cache"
     pip_cache.mkdir(parents=True)
     (pip_cache / "fake.whl").write_bytes(b"A" * 500)
     
     # Python Duplicate Installs
-    primary = resolver.program_files / "Python" / "Python311"
+    primary = resolver.paths.program_files / "Python" / "Python311"
     primary.mkdir(parents=True)
     (primary / "python.exe").touch()
     
-    duplicate = resolver.local_app_data / "Programs" / "Python" / "Python311"
+    duplicate = resolver.paths.local_app_data / "Programs" / "Python" / "Python311"
     duplicate.mkdir(parents=True)
     (duplicate / "python.exe").touch()
     
     # Chrome AI Models
-    chrome_dir = resolver.local_app_data / "Google" / "Chrome" / "User Data"
+    chrome_dir = resolver.paths.local_app_data / "Google" / "Chrome" / "User Data"
     model_dir = chrome_dir / "OptGuideOnDeviceModel"
     model_dir.mkdir(parents=True)
     (model_dir / "model.tflite").write_bytes(b"B" * 200)
+    
+    # Docker Desktop WSL Backend
+    docker_wsl_dir = resolver.paths.local_app_data / "Docker" / "wsl" / "data"
+    docker_wsl_dir.mkdir(parents=True)
+    (docker_wsl_dir / "ext4.vhdx").write_bytes(b"C" * 1000)
+    
+    # WSL Distros
+    ubuntu_dir = resolver.paths.local_app_data / "Packages" / "CanonicalGroupLimited.Ubuntu_123" / "LocalState"
+    ubuntu_dir.mkdir(parents=True)
+    (ubuntu_dir / "ext4.vhdx").write_bytes(b"D" * 2000)
     
     # 2. Configure app
     registry = AnalyzerRegistry()
     registry.register(PythonAnalyzer())
     registry.register(ChromeAnalyzer())
+    
+    from devclean.infrastructure.docker.analyzer import DockerAnalyzer
+    from devclean.infrastructure.wsl.analyzer import WSLAnalyzer
+    registry.register(DockerAnalyzer())
+    registry.register(WSLAnalyzer())
+    
     registry.freeze()
     
     event_bus = EventBus()
@@ -54,7 +70,7 @@ def test_full_scan_use_case_snapshot(tmp_path: Path, snapshot):
         root_paths=(tmp_path,),
         settings=ScanSettings(),
         platform=Platform.WINDOWS,
-        paths=resolver,
+        services=resolver,
         cancelled=lambda: False
     )
     
@@ -70,7 +86,12 @@ def test_full_scan_use_case_snapshot(tmp_path: Path, snapshot):
     def sanitize_item(item):
         d = asdict(item)
         d["path"] = sanitize_path(item.path)
-        d["id"] = str(item.id)
+        d["id"] = "<UUID>"
+        if d.get("last_modified"):
+            d["last_modified"] = "<TIMESTAMP>"
+        for k, v in list(d["metadata"].items()):
+            if isinstance(v, str) and str(tmp_path) in v:
+                d["metadata"][k] = sanitize_path(Path(v))
         if item.recommendation and item.recommendation.files_affected:
             d["recommendation"]["files_affected"] = [sanitize_path(p) for p in item.recommendation.files_affected]
         if item.recommendation:

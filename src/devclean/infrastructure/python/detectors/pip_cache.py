@@ -19,7 +19,7 @@ class PipCacheDetector(Detector):
         return "pip_cache"
 
     def detect(self, context: ScanContext) -> Iterable[AuditItem]:
-        local_app_data = context.paths.local_app_data
+        local_app_data = context.services.paths.local_app_data
         
         # Standard pip cache on Windows: %LOCALAPPDATA%\pip\cache
         # Or Unix: ~/.cache/pip

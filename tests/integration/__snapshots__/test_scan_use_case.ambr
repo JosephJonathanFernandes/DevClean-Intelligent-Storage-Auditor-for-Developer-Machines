@@ -4,10 +4,35 @@
   {
     "items": [
       {
+        "category": "system_cache",
+        "confidence": "verified",
+        "description": "Docker Desktop WSL virtual disk",
+        "id": "<UUID>",
+        "is_reclaimable": false,
+        "last_modified": "<TIMESTAMP>",
+        "metadata": {
+          "provider": "docker_desktop",
+          "type": "wsl_vhdx"
+        },
+        "owner": null,
+        "path": "<TMP_PATH>/AppData/Local/Docker/wsl/data/ext4.vhdx",
+        "recommendation": {
+          "command": null,
+          "explanation": "Docker Desktop stores images and volumes inside a WSL virtual disk.",
+          "files_affected": [],
+          "rollback": "manual",
+          "rollback_notes": null,
+          "safety_reason": "Deleting the virtual disk can destroy all Docker images and volumes.",
+          "title": "Review Docker WSL backend storage"
+        },
+        "risk_level": "high",
+        "size_bytes": 1000
+      },
+      {
         "category": "chrome_ai_model",
         "confidence": "verified",
         "description": "Chrome AI Model Storage (OptGuideOnDeviceModel)",
-        "id": "7297fe71-4215-43b9-ad92-f3ce38f36037",
+        "id": "<UUID>",
         "is_reclaimable": true,
         "last_modified": null,
         "metadata": {},
@@ -28,22 +53,47 @@
         "size_bytes": 200
       },
       {
+        "category": "system_cache",
+        "confidence": "verified",
+        "description": "WSL Distribution Disk: CanonicalGroupLimited.Ubuntu",
+        "id": "<UUID>",
+        "is_reclaimable": false,
+        "last_modified": "<TIMESTAMP>",
+        "metadata": {
+          "disk_type": "ext4.vhdx",
+          "distribution": "CanonicalGroupLimited.Ubuntu"
+        },
+        "owner": null,
+        "path": "<TMP_PATH>/AppData/Local/Packages/CanonicalGroupLimited.Ubuntu_123/LocalState/ext4.vhdx",
+        "recommendation": {
+          "command": null,
+          "explanation": "This is a Windows Subsystem for Linux (WSL) virtual disk.",
+          "files_affected": [],
+          "rollback": "manual",
+          "rollback_notes": null,
+          "safety_reason": "Deleting this file will destroy the entire Linux distribution and all files inside it.",
+          "title": "Review WSL Distribution: CanonicalGroupLimited.Ubuntu"
+        },
+        "risk_level": "high",
+        "size_bytes": 2000
+      },
+      {
         "category": "unknown",
         "confidence": "probable",
         "description": "Python 3.11 Installation",
-        "id": "01b7f30f-c7d5-4c37-9886-989650b35293",
+        "id": "<UUID>",
         "is_reclaimable": true,
         "last_modified": null,
         "metadata": {
           "is_duplicate": true,
-          "primary_path": "C:\\Users\\Joseph\\AppData\\Local\\Temp\\pytest-of-Joseph\\pytest-5\\test_full_scan_use_case_snapsh0\\Program Files\\Python\\Python311",
+          "primary_path": "<TMP_PATH>/Program Files/Python/Python311",
           "version": "3.11"
         },
         "owner": null,
         "path": "<TMP_PATH>/AppData/Local/Programs/Python/Python311",
         "recommendation": {
           "command": null,
-          "explanation": "Potential duplicate of Python 3.11 located at C:\\Users\\Joseph\\AppData\\Local\\Temp\\pytest-of-Joseph\\pytest-5\\test_full_scan_use_case_snapsh0\\Program Files\\Python\\Python311.",
+          "explanation": "Potential duplicate of Python 3.11 located at C:\\Users\\Joseph\\AppData\\Local\\Temp\\pytest-of-Joseph\\pytest-22\\test_full_scan_use_case_snapsh0\\Program Files\\Python\\Python311.",
           "files_affected": [
             "<TMP_PATH>/AppData/Local/Programs/Python/Python311"
           ],
@@ -59,7 +109,7 @@
         "category": "python_cache",
         "confidence": "verified",
         "description": "Pip package download cache",
-        "id": "8d0f262b-5a8f-419e-829c-4f5ec18a6380",
+        "id": "<UUID>",
         "is_reclaimable": true,
         "last_modified": null,
         "metadata": {},
@@ -83,7 +133,7 @@
         "category": "unknown",
         "confidence": "verified",
         "description": "Python 3.11 Installation",
-        "id": "f3c7ec8f-a35b-4a54-ba36-fdc429b8964b",
+        "id": "<UUID>",
         "is_reclaimable": false,
         "last_modified": null,
         "metadata": {
@@ -110,21 +160,21 @@
     ],
     "statistics": {
       "analyzers_failed": 0,
-      "analyzers_run": 2,
+      "analyzers_run": 4,
       "directories_scanned": 0,
       "permission_errors": 0,
       "skipped_paths": 0,
-      "total_analyzers": 2
+      "total_analyzers": 4
     },
     "summary": {
-      "high_items": 2,
+      "high_items": 4,
       "low_items": 1,
       "moderate_items": 0,
       "reclaimable_size_bytes": 700,
       "safe_items": 1,
-      "scan_duration_seconds": 0.006540799979120493,
-      "total_items": 4,
-      "total_size_bytes": 700
+      "scan_duration_seconds": 0.015595699980622157,
+      "total_items": 6,
+      "total_size_bytes": 3700
     }
   }
   '''

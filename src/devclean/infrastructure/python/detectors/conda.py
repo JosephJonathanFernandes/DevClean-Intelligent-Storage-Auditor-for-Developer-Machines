@@ -19,9 +19,9 @@ class CondaDetector(Detector):
 
     def detect(self, context: ScanContext) -> Iterable[AuditItem]:
         candidates = [
-            context.paths.user_profile / "miniconda3" / "envs",
-            context.paths.user_profile / "anaconda3" / "envs",
-            context.paths.local_app_data / "conda" / "conda" / "envs"
+            context.services.paths.user_profile / "miniconda3" / "envs",
+            context.services.paths.user_profile / "anaconda3" / "envs",
+            context.services.paths.local_app_data / "conda" / "conda" / "envs"
         ]
         
         for base_path in candidates:

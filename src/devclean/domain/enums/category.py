@@ -25,4 +25,8 @@ class Category(Enum):
     
     WSL_DISTRO = "wsl_distro"
     
+    SYSTEM_CACHE = "system_cache"
+    PROJECT_DEPENDENCY = "project_dependency"
+    BUILD_ARTIFACT = "build_artifact"
+    
     UNKNOWN = "unknown"

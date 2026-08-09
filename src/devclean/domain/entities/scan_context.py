@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 from devclean.domain.enums.platform import Platform
-from devclean.domain.services.path_resolver import PathResolver
+from devclean.domain.services.platform_services import PlatformServices
 
 @dataclass(frozen=True)
 class ScanSettings:
@@ -17,7 +17,7 @@ class ScanContext:
     root_paths: tuple[Path, ...]
     settings: ScanSettings
     platform: Platform
-    paths: PathResolver
+    services: PlatformServices
     
     # Cancellation token: analyzers should check this periodically and return if True.
     cancelled: Callable[[], bool]

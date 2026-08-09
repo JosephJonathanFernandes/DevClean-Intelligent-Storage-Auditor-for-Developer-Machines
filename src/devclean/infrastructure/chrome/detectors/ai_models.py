@@ -19,7 +19,7 @@ class ChromeAIModelDetector(Detector):
         return "chrome_ai_models"
 
     def detect(self, context: ScanContext) -> Iterable[AuditItem]:
-        chrome_user_data = context.paths.local_app_data / "Google" / "Chrome" / "User Data"
+        chrome_user_data = context.services.paths.local_app_data / "Google" / "Chrome" / "User Data"
         
         if not chrome_user_data.exists():
             return

@@ -31,6 +31,10 @@ jobs:
       run: |
         mypy src/
         
+    - name: Check architecture with import-linter
+      run: |
+        lint-imports
+        
     - name: Run tests and collect coverage
       run: |
         pytest

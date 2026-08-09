@@ -42,13 +42,9 @@ class PythonAnalyzer(Analyzer):
                 break
             
             try:
-                # We yield from the detector directly.
-                # If a specific detector crashes, we let it bubble up to the pipeline
-                # orchestrator which handles fault isolation per Analyzer. 
-                # (Ideally, we might want isolation per-detector, but for this reference 
-                # architecture we rely on the Pipeline's isolation at the Analyzer level,
-                # or we could catch it here if we wanted fine-grained isolation.)
-                yield from detector.detect(context)
+                items = list(detector.detect(context))
+                items.sort(key=lambda i: (i.category.value, str(i.path), -i.size_bytes))
+                yield from items
             except Exception as e:
                 # For this Phase, we'll let the Pipeline handle it, meaning one failed
                 # detector fails the whole PythonAnalyzer. 

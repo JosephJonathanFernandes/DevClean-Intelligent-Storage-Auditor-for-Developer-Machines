@@ -54,7 +54,7 @@ def test_pipeline_fault_isolation_and_aggregation():
 
     event_bus = EventBus()
     
-    from tests.unit.infrastructure.test_python_detectors import MockPathResolver
+    from tests.unit.infrastructure.test_python_detectors import MockPlatformServices
     
     # We want to track events for verification
     emitted_events = []
@@ -70,7 +70,7 @@ def test_pipeline_fault_isolation_and_aggregation():
         root_paths=(Path("/"),),
         settings=ScanSettings(),
         platform=Platform.LINUX,
-        paths=MockPathResolver(tmp),
+        services=MockPlatformServices(tmp),
         cancelled=lambda: False
     )
 

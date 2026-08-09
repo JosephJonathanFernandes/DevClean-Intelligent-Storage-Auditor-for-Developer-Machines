@@ -1,31 +1,20 @@
 from typing import Iterable
-
-from devclean.domain.services.analyzer import Analyzer, AnalyzerMetadata
-from devclean.domain.services.detector import Detector
 from devclean.domain.entities.scan_context import ScanContext
 from devclean.domain.entities.audit_item import AuditItem
 from devclean.domain.enums.category import Category
+from devclean.domain.services.analyzer import Analyzer, AnalyzerMetadata
+from devclean.domain.services.detector import Detector
+from .detectors import WSLDistroDetector
 
-from .detectors.ai_models import ChromeAIModelDetector
-from .detectors.profiles import ChromeProfileDetector
-from .detectors.cache import ChromeCacheDetector
-
-
-class ChromeAnalyzer(Analyzer):
-    """
-    Reference implementation of a composite Analyzer for Chrome artifacts.
-    """
-    
-    def __init__(self) -> None:
+class WSLAnalyzer(Analyzer):
+    def __init__(self):
         self._metadata = AnalyzerMetadata(
-            name="chrome",
-            category=Category.UNKNOWN,
-            priority=20
+            name="wsl",
+            category=Category.SYSTEM_CACHE,
+            priority=25
         )
         self._detectors: list[Detector] = [
-            ChromeAIModelDetector(),
-            ChromeProfileDetector(),
-            ChromeCacheDetector()
+            WSLDistroDetector()
         ]
 
     @property
