@@ -1,0 +1,62 @@
+from typing import Iterable
+from pathlib import Path
+
+from devclean.domain.services.detector import Detector
+from devclean.domain.entities.scan_context import ScanContext
+from devclean.domain.entities.audit_item import AuditItem
+from devclean.domain.entities.recommendation import Recommendation
+from devclean.domain.enums.category import Category
+from devclean.domain.enums.risk_level import RiskLevel
+from devclean.domain.enums.confidence_level import ConfidenceLevel
+from devclean.domain.enums.rollback_difficulty import RollbackDifficulty
+from devclean.infrastructure.filesystem.size import calculate_directory_size
+
+
+class CondaDetector(Detector):
+    @property
+    def name(self) -> str:
+        return "conda_envs"
+
+    def detect(self, context: ScanContext) -> Iterable[AuditItem]:
+        candidates = [
+            context.paths.user_profile / "miniconda3" / "envs",
+            context.paths.user_profile / "anaconda3" / "envs",
+            context.paths.local_app_data / "conda" / "conda" / "envs"
+        ]
+        
+        for base_path in candidates:
+            if not base_path.exists() or context.cancelled():
+                continue
+                
+            try:
+                for env_dir in base_path.iterdir():
+                    if context.cancelled():
+                        break
+                        
+                    if not env_dir.is_dir():
+                        continue
+                        
+                    size = calculate_directory_size(env_dir, context.cancelled)
+                    
+                    rec = Recommendation(
+                        title="Remove Conda Environment",
+                        explanation="Conda virtual environment.",
+                        safety_reason="Removing this environment will delete all installed packages within it. Any projects relying on this environment will break.",
+                        rollback=RollbackDifficulty.MANUAL,
+                        rollback_notes="Must re-run `conda env create` to restore.",
+                        command=f"conda env remove -n {env_dir.name}",
+                        files_affected=(env_dir,)
+                    )
+                    
+                    yield AuditItem(
+                        path=env_dir,
+                        size_bytes=size,
+                        category=Category.CONDA_ENV,
+                        risk_level=RiskLevel.HIGH,
+                        description=f"Conda Environment: {env_dir.name}",
+                        confidence=ConfidenceLevel.VERIFIED,
+                        recommendation=rec,
+                        is_reclaimable=True
+                    )
+            except (PermissionError, FileNotFoundError):
+                continue
