@@ -1,0 +1,8 @@
+from enum import IntEnum
+
+class ExitCode(IntEnum):
+    SUCCESS = 0
+    EXECUTION_FAILURE = 1
+    VALIDATION_FAILURE = 2
+    CLEANUP_ACTIONS_AVAILABLE = 3
+    PERMISSION_REQUIRED = 4
