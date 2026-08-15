@@ -1,6 +1,6 @@
 import uuid
 from typing import Dict, Sequence
-from devclean.domain.entities.cleanup_recommendation import CleanupRecommendation
+from devclean.domain.entities.cleanup_decision import CleanupDecision
 from devclean.domain.entities.cleanup_policy import CleanupPolicy
 from devclean.domain.entities.cleanup_plan import CleanupPlan, CleanupAction
 from devclean.domain.enums.risk_level import RiskLevel
@@ -8,7 +8,7 @@ from devclean.domain.enums.risk_level import RiskLevel
 class CleanupPlanner:
     """Evaluates an AuditReport against a CleanupPolicy to generate a transactional CleanupPlan."""
     
-    def create_plan(self, recommendations: Sequence[CleanupRecommendation], policy: CleanupPolicy) -> CleanupPlan:
+    def create_plan(self, decisions: Sequence[CleanupDecision], policy: CleanupPolicy) -> CleanupPlan:
         actions = []
         estimated_reclaimable = 0
         risk_summary: Dict[RiskLevel, int] = {
@@ -18,8 +18,8 @@ class CleanupPlanner:
             RiskLevel.HIGH: 0
         }
         
-        for rec in recommendations:
-            item = rec.item
+        for decision in decisions:
+            item = decision.item
             # Skip items that are not reclaimable (locked, etc.)
             if not item.is_reclaimable:
                 continue
@@ -33,7 +33,7 @@ class CleanupPlanner:
             
             action = CleanupAction(
                 id=uuid.uuid4(),
-                decision=rec,
+                decision=decision,
                 requires_confirmation=requires_confirmation
             )
             

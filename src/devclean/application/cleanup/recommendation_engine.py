@@ -1,7 +1,7 @@
 from typing import List, Sequence
 
 from devclean.domain.entities.audit_report import AuditReport
-from devclean.domain.entities.cleanup_recommendation import CleanupRecommendation
+from devclean.domain.entities.cleanup_decision import CleanupDecision
 from devclean.domain.entities.recommendation_context import RecommendationContext
 from devclean.domain.enums.risk_level import RiskLevel
 from devclean.domain.enums.recommendation_reason import RecommendationReason
@@ -16,11 +16,11 @@ class RecommendationEngine:
         self, 
         report: AuditReport, 
         context: RecommendationContext | None = None
-    ) -> List[CleanupRecommendation]:
+    ) -> List[CleanupDecision]:
         """
-        Processes a ScanResult and returns a list of prioritized CleanupRecommendations.
+        Processes a ScanResult and returns a list of prioritized CleanupDecisions.
         """
-        results: List[CleanupRecommendation] = []
+        results: List[CleanupDecision] = []
         
         for item in report.items:
             # Find the first matching rule
@@ -34,10 +34,10 @@ class RecommendationEngine:
             rec = rule_to_apply.recommend(item)
             
             # Compute score
-            base_score = rule_to_apply.score(item)
+            base_score, breakdown = rule_to_apply.score(item)
             
             # Adjust score based on context (e.g. disk pressure)
-            final_score = self._apply_context_modifiers(base_score, item, context)
+            final_score = self._apply_context_modifiers(base_score, breakdown, item, context)
             
             # Compute reason
             reason = rule_to_apply.reason(item)
@@ -46,11 +46,12 @@ class RecommendationEngine:
             if context and self._is_high_disk_pressure(context):
                 reason = RecommendationReason.HIGH_DISK_PRESSURE
             
-            results.append(CleanupRecommendation(
+            results.append(CleanupDecision(
                 item=item,
                 recommendation=rec,
                 priority_score=final_score,
-                reason=reason
+                reason=reason,
+                score_breakdown=breakdown
             ))
             
         # Sort by priority score descending
@@ -66,6 +67,7 @@ class RecommendationEngine:
     def _apply_context_modifiers(
         self, 
         base_score: float, 
+        breakdown: dict[str, float],
         item: 'AuditItem', 
         context: RecommendationContext | None
     ) -> float:
@@ -77,6 +79,8 @@ class RecommendationEngine:
         if self._is_high_disk_pressure(context):
             # Prioritize large safe cleanups heavily
             if item.size_bytes > 500_000_000 and item.risk_level in (RiskLevel.SAFE, RiskLevel.LOW):
-                score += 20.0
+                modifier = 20.0
+                score += modifier
+                breakdown["disk_pressure"] = modifier
                 
         return score

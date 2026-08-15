@@ -4,7 +4,7 @@ from devclean.infrastructure.cleanup.executor import CleanupExecutor, AllowedRoo
 from devclean.domain.entities.cleanup_plan import CleanupPlan, CleanupAction
 from devclean.domain.entities.audit_item import AuditItem
 from devclean.domain.entities.recommendation import Recommendation
-from devclean.domain.entities.cleanup_recommendation import CleanupRecommendation
+from devclean.domain.entities.cleanup_decision import CleanupDecision
 from devclean.domain.enums.category import Category
 from devclean.domain.enums.risk_level import RiskLevel
 from devclean.domain.enums.confidence_level import ConfidenceLevel
@@ -30,7 +30,7 @@ def test_executor_validation_fails_on_unsafe_path(tmp_path: Path):
         path=unsafe_path, size_bytes=100, category=Category.SYSTEM_CACHE,
         risk_level=RiskLevel.SAFE, description="safe", confidence=ConfidenceLevel.VERIFIED
     )
-    rec = CleanupRecommendation(
+    rec = CleanupDecision(
         item=item,
         recommendation=Recommendation("Clean", "Expl", "Safe", RollbackStrategy.REGENERATES_AUTOMATICALLY, CleanupOperation.DELETE_DIRECTORY, files_affected=(unsafe_path,)),
         priority_score=10.0,
@@ -57,7 +57,7 @@ def test_executor_idempotency(tmp_path: Path):
         path=missing_dir, size_bytes=100, category=Category.SYSTEM_CACHE,
         risk_level=RiskLevel.SAFE, description="safe", confidence=ConfidenceLevel.VERIFIED
     )
-    rec = CleanupRecommendation(
+    rec = CleanupDecision(
         item=item,
         recommendation=Recommendation("Clean", "Expl", "Safe", RollbackStrategy.REGENERATES_AUTOMATICALLY, CleanupOperation.DELETE_DIRECTORY, files_affected=(missing_dir,)),
         priority_score=10.0,

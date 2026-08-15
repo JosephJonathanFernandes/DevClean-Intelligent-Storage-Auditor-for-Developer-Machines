@@ -5,7 +5,7 @@ import uuid
 
 from devclean.domain.entities.audit_item import AuditItem
 from devclean.domain.entities.cleanup_permissions import CleanupPermissions
-from devclean.domain.entities.cleanup_recommendation import CleanupRecommendation
+from devclean.domain.entities.cleanup_decision import CleanupDecision
 from devclean.domain.enums.cleanup import RollbackStrategy, CleanupOperation
 from devclean.domain.enums.risk_level import RiskLevel
 
@@ -17,7 +17,7 @@ from devclean.domain.enums.risk_level import RiskLevel
 class CleanupAction:
     """A specific operation to be executed during cleanup."""
     id: uuid.UUID
-    decision: CleanupRecommendation
+    decision: CleanupDecision
     requires_confirmation: bool
 
 

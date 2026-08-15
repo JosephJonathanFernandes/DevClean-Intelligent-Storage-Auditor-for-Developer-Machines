@@ -7,7 +7,7 @@ from .scan_statistics import ScanStatistics
 from .scan_result import ScanResult
 from .recommendation import Recommendation
 from .recommendation_context import RecommendationContext
-from .cleanup_recommendation import CleanupRecommendation
+from .cleanup_decision import CleanupDecision
 from .cleanup_permissions import CleanupPermissions
 from .cleanup_plan import CleanupPlan, CleanupAction
 from .cleanup_policy import CleanupPolicy, ConservativePolicy, BalancedPolicy, AggressivePolicy
@@ -24,7 +24,7 @@ __all__ = [
     "ScanResult",
     "Recommendation",
     "RecommendationContext",
-    "CleanupRecommendation",
+    "CleanupDecision",
     "CleanupPermissions",
     "CleanupPlan",
     "CleanupAction",

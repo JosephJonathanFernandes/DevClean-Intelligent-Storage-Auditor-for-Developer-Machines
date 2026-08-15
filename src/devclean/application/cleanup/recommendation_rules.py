@@ -17,7 +17,7 @@ class RecommendationRule(Protocol):
     def recommend(self, item: AuditItem) -> Recommendation:
         ...
 
-    def score(self, item: AuditItem) -> float:
+    def score(self, item: AuditItem) -> tuple[float, dict[str, float]]:
         ...
 
     def reason(self, item: AuditItem) -> RecommendationReason:
@@ -25,14 +25,16 @@ class RecommendationRule(Protocol):
 
 # Base Rule class to provide standard scoring logic
 class BaseRecommendationRule:
-    def score(self, item: AuditItem) -> float:
+    def score(self, item: AuditItem) -> tuple[float, dict[str, float]]:
         score = 0.0
+        breakdown = {}
         
         # 1. Size bonus (Logarithmic: more size = more priority, up to a cap)
         # 1GB = 1,000,000,000 bytes. log10(1B) = 9
         if item.size_bytes > 0:
             size_weight = min(10.0, math.log10(item.size_bytes))
             score += size_weight
+            breakdown["size"] = size_weight
             
         # 2. Risk weight
         risk_weights = {
@@ -41,7 +43,9 @@ class BaseRecommendationRule:
             RiskLevel.MODERATE: 0.0,
             RiskLevel.HIGH: -5.0,
         }
-        score += risk_weights.get(item.risk_level, 0.0)
+        risk_weight = risk_weights.get(item.risk_level, 0.0)
+        score += risk_weight
+        breakdown["safety"] = risk_weight
         
         # 3. Confidence weight
         confidence_weights = {
@@ -49,7 +53,9 @@ class BaseRecommendationRule:
             ConfidenceLevel.PROBABLE: 2.0,
             ConfidenceLevel.HEURISTIC: 0.0,
         }
-        score += confidence_weights.get(item.confidence, 0.0)
+        confidence_weight = confidence_weights.get(item.confidence, 0.0)
+        score += confidence_weight
+        breakdown["confidence"] = confidence_weight
         
         # 4. Rollback weight (Automatic = better)
         rec = self.recommend(item)
@@ -60,9 +66,11 @@ class BaseRecommendationRule:
             RollbackStrategy.REQUIRES_MANUAL_RESTORE: -5.0,
             RollbackStrategy.NO_ROLLBACK_AVAILABLE: -10.0,
         }
-        score += rollback_weights.get(rec.rollback, 0.0)
+        rollback_weight = rollback_weights.get(rec.rollback, 0.0)
+        score += rollback_weight
+        breakdown["rollback"] = rollback_weight
         
-        return max(0.0, score) # Ensure non-negative score
+        return max(0.0, score), breakdown
 
     def reason(self, item: AuditItem) -> RecommendationReason:
         if item.size_bytes > 1_000_000_000 and item.risk_level == RiskLevel.SAFE:

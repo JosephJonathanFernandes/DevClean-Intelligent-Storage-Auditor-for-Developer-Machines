@@ -14,7 +14,7 @@ def test_recommendation_engine_stability():
     """
     Test that recommendation ordering, scores, and explanations are deterministic.
     Given the same input report, the engine should always produce the exact same
-    CleanupRecommendations in the exact same order.
+    CleanupDecisions in the exact same order.
     """
     engine = RecommendationEngine()
     
@@ -82,3 +82,8 @@ def test_recommendation_engine_stability():
     large_safe_rec = next(r for r in run1 if r.item.id == uuid.UUID("22222222-2222-2222-2222-222222222222"))
     assert large_safe_rec.priority_score > 25.0
     assert large_safe_rec.reason.value == "high_disk_pressure"
+    
+    # Check that breakdown exists and contains expected keys
+    assert "safety" in large_safe_rec.score_breakdown
+    assert "size" in large_safe_rec.score_breakdown
+    assert "disk_pressure" in large_safe_rec.score_breakdown
