@@ -4,11 +4,11 @@ from pathlib import Path
 from devclean.domain.services.detector import Detector
 from devclean.domain.entities.scan_context import ScanContext
 from devclean.domain.entities.audit_item import AuditItem
-from devclean.domain.entities.recommendation import Recommendation
+
 from devclean.domain.enums.category import Category
 from devclean.domain.enums.risk_level import RiskLevel
 from devclean.domain.enums.confidence_level import ConfidenceLevel
-from devclean.domain.enums.rollback_difficulty import RollbackDifficulty
+from devclean.domain.enums.cleanup import RollbackStrategy, CleanupOperation
 from devclean.infrastructure.filesystem.size import calculate_directory_size
 
 
@@ -40,15 +40,7 @@ class ChromeCacheDetector(Detector):
                     if cache_dir.exists() and cache_dir.is_dir():
                         size = calculate_directory_size(cache_dir, context.cancelled)
                         
-                        rec = Recommendation(
-                            title=f"Clear Chrome {cache_dir_name}",
-                            explanation=f"Temporary internet files stored by Chrome in the {profile.name} profile.",
-                            safety_reason="Safe to delete. Chrome will rebuild the cache as you browse.",
-                            rollback=RollbackDifficulty.AUTOMATIC,
-                            rollback_notes="Websites may load slightly slower the next time you visit them.",
-                            files_affected=(cache_dir,)
-                        )
-                        
+
                         yield AuditItem(
                             path=cache_dir,
                             size_bytes=size,
@@ -56,7 +48,6 @@ class ChromeCacheDetector(Detector):
                             risk_level=RiskLevel.SAFE,
                             description=f"Chrome {cache_dir_name} ({profile.name})",
                             confidence=ConfidenceLevel.VERIFIED,
-                            recommendation=rec,
                             is_reclaimable=True
                         )
         except (PermissionError, FileNotFoundError):

@@ -6,11 +6,11 @@ import re
 from devclean.domain.services.detector import Detector
 from devclean.domain.entities.scan_context import ScanContext
 from devclean.domain.entities.audit_item import AuditItem
-from devclean.domain.entities.recommendation import Recommendation
+
 from devclean.domain.enums.category import Category
 from devclean.domain.enums.risk_level import RiskLevel
 from devclean.domain.enums.confidence_level import ConfidenceLevel
-from devclean.domain.enums.rollback_difficulty import RollbackDifficulty
+
 from devclean.infrastructure.filesystem.size import calculate_directory_size
 
 
@@ -96,15 +96,7 @@ class VirtualEnvDetector(Detector):
             confidence = ConfidenceLevel.PROBABLE
             explanation = "Virtual environment has not been modified in over 180 days."
 
-        rec = Recommendation(
-            title="Delete virtual environment",
-            explanation=explanation,
-            safety_reason=safety,
-            rollback=RollbackDifficulty.MANUAL,
-            rollback_notes="Must run `python -m venv` and `pip install -r requirements.txt` to restore.",
-            files_affected=(venv_path,)
-        )
-        
+
         return AuditItem(
             path=venv_path,
             size_bytes=size,
@@ -112,6 +104,5 @@ class VirtualEnvDetector(Detector):
             risk_level=RiskLevel.HIGH, # Venvs are always HIGH risk
             description="Python Virtual Environment",
             confidence=confidence,
-            recommendation=rec,
             is_reclaimable=True
         )

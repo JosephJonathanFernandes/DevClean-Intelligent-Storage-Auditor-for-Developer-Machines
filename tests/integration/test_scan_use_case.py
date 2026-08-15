@@ -92,17 +92,16 @@ def test_full_scan_use_case_snapshot(tmp_path: Path, snapshot):
         for k, v in list(d["metadata"].items()):
             if isinstance(v, str) and str(tmp_path) in v:
                 d["metadata"][k] = sanitize_path(Path(v))
-        if item.recommendation and item.recommendation.files_affected:
-            d["recommendation"]["files_affected"] = [sanitize_path(p) for p in item.recommendation.files_affected]
-        if item.recommendation:
-            d["recommendation"]["rollback"] = item.recommendation.rollback.value
         d["category"] = item.category.value
         d["risk_level"] = item.risk_level.value
         d["confidence"] = item.confidence.value
         return d
         
     report_data = {
-        "summary": asdict(result.report.summary),
+        "summary": {
+            k: v for k, v in asdict(result.report.summary).items()
+            if k not in ("scan_duration_seconds",)
+        },
         "statistics": {
             k: v for k, v in asdict(result.statistics).items() 
             if k not in ("scan_duration_seconds",) # Duration is non-deterministic

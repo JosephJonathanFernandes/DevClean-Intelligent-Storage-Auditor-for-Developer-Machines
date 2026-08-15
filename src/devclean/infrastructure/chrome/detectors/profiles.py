@@ -5,11 +5,11 @@ import re
 from devclean.domain.services.detector import Detector
 from devclean.domain.entities.scan_context import ScanContext
 from devclean.domain.entities.audit_item import AuditItem
-from devclean.domain.entities.recommendation import Recommendation
+
 from devclean.domain.enums.category import Category
 from devclean.domain.enums.risk_level import RiskLevel
 from devclean.domain.enums.confidence_level import ConfidenceLevel
-from devclean.domain.enums.rollback_difficulty import RollbackDifficulty
+from devclean.domain.enums.cleanup import RollbackStrategy, CleanupOperation
 from devclean.infrastructure.filesystem.size import calculate_directory_size
 
 
@@ -36,15 +36,7 @@ class ChromeProfileDetector(Detector):
                 if item.name == "Default" or re.match(r"^Profile \d+$", item.name):
                     size = calculate_directory_size(item, context.cancelled)
                     
-                    rec = Recommendation(
-                        title="Delete Chrome Profile",
-                        explanation=f"User profile directory: {item.name}.",
-                        safety_reason="Deleting this will remove all browsing history, bookmarks, passwords, and extensions for this profile.",
-                        rollback=RollbackDifficulty.IMPOSSIBLE,
-                        rollback_notes="Data cannot be recovered unless it was synced to a Google account.",
-                        files_affected=(item,)
-                    )
-                    
+
                     yield AuditItem(
                         path=item,
                         size_bytes=size,
@@ -52,7 +44,6 @@ class ChromeProfileDetector(Detector):
                         risk_level=RiskLevel.HIGH,
                         description=f"Chrome Profile: {item.name}",
                         confidence=ConfidenceLevel.VERIFIED,
-                        recommendation=rec,
                         is_reclaimable=False # By default, don't recommend deleting profiles
                     )
         except (PermissionError, FileNotFoundError):

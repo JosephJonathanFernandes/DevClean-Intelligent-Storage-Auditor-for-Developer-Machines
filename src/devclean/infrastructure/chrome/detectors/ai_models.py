@@ -5,11 +5,11 @@ import re
 from devclean.domain.services.detector import Detector
 from devclean.domain.entities.scan_context import ScanContext
 from devclean.domain.entities.audit_item import AuditItem
-from devclean.domain.entities.recommendation import Recommendation
+
 from devclean.domain.enums.category import Category
 from devclean.domain.enums.risk_level import RiskLevel
 from devclean.domain.enums.confidence_level import ConfidenceLevel
-from devclean.domain.enums.rollback_difficulty import RollbackDifficulty
+from devclean.domain.enums.cleanup import RollbackStrategy, CleanupOperation
 from devclean.infrastructure.filesystem.size import calculate_directory_size
 
 
@@ -44,15 +44,7 @@ class ChromeAIModelDetector(Detector):
                     if re.match(pattern, item.name, re.IGNORECASE):
                         size = calculate_directory_size(item, context.cancelled)
                         
-                        rec = Recommendation(
-                            title="Delete Chrome AI Models",
-                            explanation="Chrome automatically downloads on-device AI models for features like Help Me Write.",
-                            safety_reason="Safe to delete. Chrome will re-download the models in the background if the features are used again.",
-                            rollback=RollbackDifficulty.AUTOMATIC,
-                            rollback_notes="Chrome automatically manages these.",
-                            files_affected=(item,)
-                        )
-                        
+
                         yield AuditItem(
                             path=item,
                             size_bytes=size,
@@ -60,7 +52,6 @@ class ChromeAIModelDetector(Detector):
                             risk_level=RiskLevel.LOW,
                             description=f"Chrome AI Model Storage ({item.name})",
                             confidence=ConfidenceLevel.VERIFIED,
-                            recommendation=rec,
                             is_reclaimable=True
                         )
                         break # Prevent yielding same folder twice if it matches multiple patterns

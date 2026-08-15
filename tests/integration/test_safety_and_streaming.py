@@ -67,12 +67,3 @@ def test_mutation_safety_during_scan(tmp_path: Path):
     # Verify the scan actually found things
     assert result.statistics.analyzers_run == 1
     assert result.report.summary.total_items > 0
-    
-    # Verify explainability structure on all reclaimable items
-    for item in result.report.items:
-        if item.is_reclaimable:
-            assert item.recommendation is not None
-            assert item.recommendation.title
-            assert item.recommendation.explanation
-            assert item.recommendation.safety_reason
-            assert item.recommendation.rollback

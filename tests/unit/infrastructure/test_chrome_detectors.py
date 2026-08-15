@@ -40,7 +40,6 @@ def test_chrome_ai_model_detector(tmp_path: Path):
         assert item.risk_level == RiskLevel.LOW
         assert item.confidence == ConfidenceLevel.VERIFIED
         assert item.is_reclaimable is True
-        assert "Safe to delete" in item.recommendation.safety_reason
 
 
 def test_chrome_profile_detector(tmp_path: Path):

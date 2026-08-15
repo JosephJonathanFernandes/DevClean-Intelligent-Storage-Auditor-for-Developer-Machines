@@ -59,14 +59,3 @@ class AnalyzerContractTestSuite:
         
         for idx, (actual, expected) in enumerate(zip(items, sorted_items)):
             assert actual == expected, f"Item at index {idx} out of order in {analyzer.metadata.name}"
-
-    def test_explainability_compliance(self, analyzer: Analyzer, context: ScanContext):
-        """All reclaimable items MUST have a Recommendation for safe explainability."""
-        items = list(analyzer.scan(context))
-        for item in items:
-            if item.is_reclaimable:
-                assert item.recommendation is not None, f"Reclaimable item {item.path} missing recommendation"
-                assert len(item.recommendation.title) > 0
-                assert len(item.recommendation.explanation) > 0
-
-

@@ -5,11 +5,11 @@ import re
 from devclean.domain.services.detector import Detector
 from devclean.domain.entities.scan_context import ScanContext
 from devclean.domain.entities.audit_item import AuditItem
-from devclean.domain.entities.recommendation import Recommendation
+
 from devclean.domain.enums.category import Category
 from devclean.domain.enums.risk_level import RiskLevel
 from devclean.domain.enums.confidence_level import ConfidenceLevel
-from devclean.domain.enums.rollback_difficulty import RollbackDifficulty
+
 from devclean.infrastructure.filesystem.size import calculate_directory_size
 
 
@@ -72,15 +72,7 @@ class InstallationDetector(Detector):
                     title = "Remove duplicate Python installation"
                     confidence = ConfidenceLevel.PROBABLE
                     
-                rec = Recommendation(
-                    title=title,
-                    explanation=explanation,
-                    safety_reason="Removing a Python installation will break any scripts or virtual environments that depend on it.",
-                    rollback=RollbackDifficulty.MANUAL,
-                    rollback_notes="Must re-run the Python installer.",
-                    files_affected=(path,)
-                )
-                
+
                 yield AuditItem(
                     path=path,
                     size_bytes=size,
@@ -88,7 +80,6 @@ class InstallationDetector(Detector):
                     risk_level=RiskLevel.HIGH,
                     description=f"Python {version} Installation",
                     confidence=confidence,
-                    recommendation=rec,
                     is_reclaimable=is_duplicate, # Only mark duplicates as reclaimable by default
                     metadata={"version": version, "is_duplicate": is_duplicate, "primary_path": str(primary) if is_duplicate else None}
                 )

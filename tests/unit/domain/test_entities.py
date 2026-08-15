@@ -9,7 +9,7 @@ from devclean.domain.entities.scan_summary import ScanSummary
 from devclean.domain.enums.category import Category
 from devclean.domain.enums.risk_level import RiskLevel
 from devclean.domain.enums.confidence_level import ConfidenceLevel
-from devclean.domain.enums.rollback_difficulty import RollbackDifficulty
+from devclean.domain.enums.cleanup import RollbackStrategy, CleanupOperation
 
 def test_audit_item_immutability():
     item = AuditItem(
@@ -54,11 +54,11 @@ def test_recommendation_serialization():
         title="Delete me",
         explanation="It is bad",
         safety_reason="Nothing will break",
-        rollback=RollbackDifficulty.EASY
+        operation=CleanupOperation.DELETE_DIRECTORY, rollback=RollbackStrategy.REGENERATES_AUTOMATICALLY
     )
     
-    assert rec.rollback == RollbackDifficulty.EASY
-    assert rec.rollback.value == "easy"
+    assert rec.rollback == RollbackStrategy.REGENERATES_AUTOMATICALLY
+    assert rec.rollback.value == "regenerates_automatically"
 
 def test_audit_report_properties():
     item1 = AuditItem(

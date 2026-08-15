@@ -1,7 +1,7 @@
 from devclean.domain.enums.category import Category
 from devclean.domain.enums.risk_level import RiskLevel
 from devclean.domain.enums.confidence_level import ConfidenceLevel
-from devclean.domain.enums.rollback_difficulty import RollbackDifficulty
+from devclean.domain.enums.cleanup import RollbackStrategy
 from devclean.domain.enums.platform import Platform
 
 def test_risk_level_ordering():
@@ -19,11 +19,11 @@ def test_confidence_level_values():
     assert ConfidenceLevel.UNKNOWN.value == "unknown"
 
 def test_rollback_difficulty_values():
-    assert RollbackDifficulty.AUTOMATIC.value == "automatic"
-    assert RollbackDifficulty.EASY.value == "easy"
-    assert RollbackDifficulty.MANUAL.value == "manual"
-    assert RollbackDifficulty.DIFFICULT.value == "difficult"
-    assert RollbackDifficulty.IMPOSSIBLE.value == "impossible"
+    assert RollbackStrategy.REGENERATES_AUTOMATICALLY.value == "regenerates_automatically"
+    assert RollbackStrategy.REQUIRES_REDOWNLOAD.value == "requires_redownload"
+    assert RollbackStrategy.REQUIRES_MANUAL_RESTORE.value == "requires_manual_restore"
+    assert RollbackStrategy.ARCHIVE_AND_RESTORE.value == "archive_and_restore"
+    assert RollbackStrategy.NO_ROLLBACK_AVAILABLE.value == "no_rollback_available"
 
 def test_platform_values():
     assert Platform.WINDOWS.value == "windows"

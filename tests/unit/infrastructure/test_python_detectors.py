@@ -5,7 +5,7 @@ from devclean.domain.entities.scan_context import ScanContext, ScanSettings
 from devclean.domain.enums.platform import Platform
 from devclean.domain.enums.risk_level import RiskLevel
 from devclean.domain.enums.confidence_level import ConfidenceLevel
-from devclean.domain.enums.rollback_difficulty import RollbackDifficulty
+from devclean.domain.enums.cleanup import RollbackStrategy
 from datetime import datetime
 from typing import Mapping
 
@@ -94,10 +94,6 @@ def test_pip_cache_detector(tmp_path: Path):
     assert item.size_bytes == 1024
     assert item.risk_level == RiskLevel.SAFE
     assert item.confidence == ConfidenceLevel.VERIFIED
-    
-    assert item.recommendation is not None
-    assert item.recommendation.rollback == RollbackDifficulty.AUTOMATIC
-    assert item.recommendation.command == "py -m pip cache purge"
 
 
 def test_virtualenv_detector_orphaned(tmp_path: Path):
@@ -125,7 +121,6 @@ def test_virtualenv_detector_orphaned(tmp_path: Path):
     item = items[0]
     assert item.risk_level == RiskLevel.HIGH
     assert item.confidence == ConfidenceLevel.VERIFIED  # Verified orphan because base missing
-    assert "no longer exists" in item.recommendation.explanation
 
 
 def test_installation_detector_duplicates(tmp_path: Path):
@@ -158,7 +153,6 @@ def test_installation_detector_duplicates(tmp_path: Path):
     
     assert dupe_item.is_reclaimable is True
     assert dupe_item.confidence == ConfidenceLevel.PROBABLE
-    assert "duplicate" in dupe_item.recommendation.explanation.lower()
     
     assert primary_item.is_reclaimable is False
     assert primary_item.confidence == ConfidenceLevel.VERIFIED
