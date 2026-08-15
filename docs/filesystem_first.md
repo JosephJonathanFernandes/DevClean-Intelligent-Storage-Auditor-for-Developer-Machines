@@ -44,10 +44,10 @@ Parsing files is cross-platform. Invoking CLI tools introduces platform-specific
 
 By decoupling discovery from execution, DevClean enforces a strict transactional boundary.
 
-1. **Audit**: Detectors observe the filesystem and yield immutable `AuditItem`s.
-2. **Recommend**: The `RecommendationEngine` evaluates facts to produce a `CleanupRecommendation`.
-3. **Plan**: The `CleanupPlanner` matches recommendations against a `CleanupPolicy` to generate a transactional `CleanupPlan`.
-4. **Preview**: The `ExplainabilityService` presents the plan transparently to the user.
-5. **Execute**: The `CleanupExecutor` strictly enforces path confinement and performs the operations, logging an immutable audit record.
+1. **Audit (Discovery)**: Detectors observe the filesystem and yield immutable `AuditItem`s. They act purely as facts and do not make judgments.
+2. **Recommend (Prescription)**: The `RecommendationEngine` evaluates those facts against deterministic `RecommendationRule`s to produce a `CleanupRecommendation`.
+3. **Plan (Orchestration)**: The `CleanupPlanner` matches recommendations against a user-defined `CleanupPolicy` (Conservative, Balanced, Aggressive) to generate a transactional `CleanupPlan`.
+4. **Preview (Transparency)**: The `ExplainabilityService` presents the plan transparently to the user, showcasing exact commands, file paths, and potential consequences.
+5. **Execute (Safety)**: The `CleanupExecutor` strictly enforces path confinement and performs operations with rollback strategies in mind, securely logging an immutable audit record of actions taken.
 
-This pipeline guarantees that decisions are deterministic, execution is safe, and user trust is maintained.
+This decoupled pipeline guarantees that decisions are deterministic, execution is strictly scoped and safe, and the user's trust is never compromised.
