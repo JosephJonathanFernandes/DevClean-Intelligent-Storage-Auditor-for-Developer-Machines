@@ -5,9 +5,11 @@ import platform
 from pathlib import Path
 from typing import Optional
 
-from devclean.domain.entities.scan_context import ScanContext
+from devclean.domain.entities.scan_context import ScanContext, ScanSettings
 from devclean.domain.entities.cleanup_policy import ConservativePolicy, BalancedPolicy, AggressivePolicy
 from devclean.domain.enums.cleanup import CleanupMode
+from devclean.domain.enums.platform import Platform
+from devclean.infrastructure.system.services import DefaultPlatformServices
 from devclean.application.use_cases.scan import ScanUseCase
 from devclean.application.events.event_bus import EventBus
 from devclean.application.analyzers.registry import AnalyzerRegistry
@@ -95,7 +97,14 @@ def scan(
         use_case = ScanUseCase(pipeline)
         
         exclude_paths = tuple(Path(e) for e in settings.scan.exclude)
-        context = ScanContext(target_path=path, exclude_paths=exclude_paths)
+        scan_settings = ScanSettings(exclude_patterns=exclude_paths)
+        context = ScanContext(
+            root_paths=(path,),
+            settings=scan_settings,
+            platform=Platform.WINDOWS,
+            services=DefaultPlatformServices(),
+            cancelled=lambda: False
+        )
 
         if json_fmt or ndjson_fmt:
             result = use_case.execute(context)
@@ -137,7 +146,14 @@ def cleanup(
         use_case = ScanUseCase(pipeline)
         
         exclude_paths = tuple(Path(e) for e in settings.scan.exclude)
-        context = ScanContext(target_path=path, exclude_paths=exclude_paths)
+        scan_settings = ScanSettings(exclude_patterns=exclude_paths)
+        context = ScanContext(
+            root_paths=(path,),
+            settings=scan_settings,
+            platform=Platform.WINDOWS,
+            services=DefaultPlatformServices(),
+            cancelled=lambda: False
+        )
 
         if json_fmt or ndjson_fmt:
             result = use_case.execute(context)
@@ -242,7 +258,14 @@ def report(
         use_case = ScanUseCase(pipeline)
         
         exclude_paths = tuple(Path(e) for e in settings.scan.exclude)
-        context = ScanContext(target_path=path, exclude_paths=exclude_paths)
+        scan_settings = ScanSettings(exclude_patterns=exclude_paths)
+        context = ScanContext(
+            root_paths=(path,),
+            settings=scan_settings,
+            platform=Platform.WINDOWS,
+            services=DefaultPlatformServices(),
+            cancelled=lambda: False
+        )
 
         with progress.run():
             result = use_case.execute(context)
@@ -318,7 +341,7 @@ def explain(category: str):
 @app.command()
 def version(verbose: bool = typer.Option(False, "--verbose", help="Show diagnostic version details")):
     """Show version information."""
-    ver_str = "0.6.0" # Hardcoded for now
+    ver_str = "1.0.0" # Hardcoded for now
     if not verbose:
         print(f"DevClean {ver_str}")
     else:
