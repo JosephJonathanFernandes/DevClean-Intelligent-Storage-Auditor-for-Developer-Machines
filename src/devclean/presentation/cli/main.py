@@ -54,10 +54,17 @@ def _build_pipeline(event_bus: EventBus) -> AnalyzerRegistry:
     return registry
 
 def _handle_json_output(data, json_fmt: bool, ndjson_fmt: bool):
+    if isinstance(data, dict):
+        data["schema_version"] = "1.0"
+        data["engine_version"] = "1.0.0"
+
     if json_fmt:
         print(json.dumps(data, cls=DevCleanJSONEncoder, indent=2))
         return True
     if ndjson_fmt:
+        metadata = {"schema_version": "1.0", "engine_version": "1.0.0"}
+        print(json.dumps(metadata))
+        
         if "summary" in data:
             print(json.dumps({"summary": data["summary"]}, cls=DevCleanJSONEncoder))
         if "items" in data:
@@ -256,6 +263,7 @@ def report(
             out_path = Path(json_out)
             data = {
                 "schema_version": "1.0",
+                "engine_version": "1.0.0",
                 "generated_at": result.report.summary.total_size_bytes, # simplistic mapping
                 "scan_id": str(result.report.items[0].id) if result.report.items else "none",
                 "summary": result.report.summary,

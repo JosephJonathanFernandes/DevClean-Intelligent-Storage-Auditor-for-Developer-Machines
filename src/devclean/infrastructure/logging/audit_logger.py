@@ -39,13 +39,14 @@ class ExecutionHistoryLogger:
         
         log_data: Dict[str, Any] = {
             "schema_version": "1.0",
+            "engine_version": "1.0.0",
             "timestamp": timestamp,
             "plan_id": str(plan.id),
             "mode": mode.value,
             "policy": policy_name,
             "freed_bytes": report.total_freed_bytes,
             "provenance": {
-                "devclean_version": "0.5.0", # TODO: read from __version__
+                "devclean_version": "1.0.0",
                 "platform": platform.system(),
                 "platform_release": platform.release(),
                 "python_version": platform.python_version()
