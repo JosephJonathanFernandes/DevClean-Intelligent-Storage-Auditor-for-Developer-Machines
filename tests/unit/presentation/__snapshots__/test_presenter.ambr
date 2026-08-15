@@ -1,0 +1,59 @@
+# serializer version: 1
+# name: test_show_cleanup_preview_snapshot
+  '''
+                                       Cleanup Preview                                     
+  ┌──────────────────────────────────────────┬──────┬─────────┬───────────────────────────┐
+  │ Action                                   │ Risk │    Size │ Rollback                  │
+  ├──────────────────────────────────────────┼──────┼─────────┼───────────────────────────┤
+  │ Purge cache System cache files           │ SAFE │ 14.3 MB │ Regenerates automatically │
+  └──────────────────────────────────────────┴──────┴─────────┴───────────────────────────┘
+  ┌──────────────────────────────────────── Safety Guarantee ────────────────────────────────────────┐
+  │ Will not delete installed Python packages, virtual environments, user documents, or Chrome       │
+  │ profiles.                                                                                        │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘
+  
+  '''
+# ---
+# name: test_show_explanation_snapshot
+  '''
+  Python Cache
+  
+  This category stores downloaded package archives or caches.
+  Deleting it will not uninstall active packages.
+  
+  Rollback: Regenerates automatically
+  Risk: Safe
+  Confidence: Verified
+  
+  '''
+# ---
+# name: test_show_history_snapshot
+  '''
+  2026-08-15T10:22:00Z (EXECUTE)
+  Freed: 7.5 GB
+  Policy: balanced
+  
+  2026-08-12T18:03:00Z (EXECUTE)
+  Freed: 2.2 GB
+  Policy: conservative
+  
+  
+  '''
+# ---
+# name: test_show_scan_summary_snapshot
+  '''
+  
+  Scan complete
+  
+  Potential reclaim: 9.5 MB
+  
+  Findings
+  
+  SAFE
+    System cache                   9.5 MB
+  
+  Run: devclean cleanup --preview
+  
+  
+  '''
+# ---
