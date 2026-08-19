@@ -1,5 +1,5 @@
 [project]
-name = "devclean"
+name = "devclean-cli"
 version = "1.0.0"
 description = "An intelligent storage auditor for developer machines."
 authors = [{ name = "Joseph Jonathan Fernandes" }]
