@@ -19,17 +19,18 @@ classifiers = [
     "Topic :: Utilities",
 ]
 
+dependencies = [
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "questionary>=2.0.0"
+]
+
 [project.urls]
 Repository = "https://github.com/JosephJonathanFernandes/DevClean-Intelligent-Storage-Auditor-for-Developer-Machines"
 Issues = "https://github.com/JosephJonathanFernandes/DevClean-Intelligent-Storage-Auditor-for-Developer-Machines/issues"
 
 [project.scripts]
 devclean = "devclean.presentation.cli.main:app"
-dependencies = [
-    "typer>=0.9.0",
-    "rich>=13.0.0",
-    "questionary>=2.0.0"
-]
 
 [project.optional-dependencies]
 dev = [
